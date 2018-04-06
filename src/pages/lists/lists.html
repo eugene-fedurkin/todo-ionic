@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>lists</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label color="primary" floating>Search</ion-label>
+      <ion-input [ngModel]="input" (ngModelChange)="filterLists($event)"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <button ion-button (click)="openWindowToCreateList()">create list</button>
+
+  <ion-list>
+    <page-list *ngFor="let list of filteredLists" [list]="list" (onSelect)="select($event)"></page-list>
+  </ion-list>
+</ion-content>
