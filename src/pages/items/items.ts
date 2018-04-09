@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {  NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+
+import { StoreService } from '../../service/store-service';
 
 import { ListModel } from '../../model/list';
 import { ItemModel } from '../../model/item';
@@ -11,24 +12,28 @@ import { ItemModel } from '../../model/item';
   selector: 'page-items',
   templateUrl: 'items.html',
 })
-export class Items {
+export class Items implements OnInit {
 
-  private id: number = 0;
-  private list: ListModel;
   public input: string = '';
+  public get list(): ListModel {
+    return this.store.list;
+  }
+  public get filteredItems(): ItemModel[] {
+    return this.store.filteredItems;
+  }
 
   constructor(
-    private navCtrl: NavController,
+    private store: StoreService,
     private navParams: NavParams,
     private alertCtrl: AlertController,
-    private storage: Storage,
   ) {
-    this.list = this.navParams.get('list');
+    this.store.list = this.navParams.get('list');
+    this.store.filteredItems = this.store.list.items;
   }
 
   public filterItems(value: string): void {
     this.input = value;
-    // TODO: add filter
+    this.store.updateFilteredItems(this.input);
   }
 
   public openWindowToCreateItem(): void {
@@ -51,14 +56,14 @@ export class Items {
         },
         {
           text: 'Create',
-          handler: data => {
-            const item = new ItemModel(data.title, data.description, this.id++);
-            this.list.items.push(item);
-            this.storage.set(`${this.list.id}`, JSON.stringify(this.list));
-          }
+          handler: data => this.store.saveItem(data.title, data.description),
         }
       ]
     });
     alert.present();
+  }
+
+  ngOnInit(): void {
+    this.store.initializeItemId();
   }
 }

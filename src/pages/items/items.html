@@ -5,16 +5,10 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-    <ion-item>
-      <ion-label color="primary" floating>Search</ion-label>
-      <ion-input [ngModel]="input" (ngModelChange)="filterItems($event)"></ion-input>
-    </ion-item>
-  </ion-list>
-
+  <ion-searchbar [ngModel]="input" (ngModelChange)="filterItems($event)"></ion-searchbar>
   <button ion-button (click)="openWindowToCreateItem()">create Item</button>
 
   <ion-list>
-    <ion-item *ngFor="let item of list.items">{{item.title}}</ion-item>
+    <item *ngFor="let item of filteredItems" [item]="item"></item>
   </ion-list>
 </ion-content>

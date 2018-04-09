@@ -1,3 +1,4 @@
 <ion-item (click)="select(list)">
   {{list.title}}
+  <ion-icon name="trash" item-end (click)="deleteList($event, list)"></ion-icon>
 </ion-item>

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 
-import { Storage } from '@ionic/storage';
-
 import { ListModel } from '../../model/list';
+import { StoreService } from '../../service/store-service';
 
 @Component({
   selector: 'page-lists',
@@ -11,37 +10,26 @@ import { ListModel } from '../../model/list';
 })
 export class ListsPage implements OnInit {
 
-  private id: number = 0;
   public input: string = '';
-  private lists: ListModel[] = [];
-  public filteredLists: ListModel[] = [];
-  public get list(): ListModel[] {
-    return this.lists;
-  }
-  
+  private get lists(): ListModel[] {
+    return this.store.lists;
+  };
+  public get filteredLists(): ListModel[] {
+    return this.store.filteredLists;
+  };
+
   constructor(
-    private storage: Storage,
-    private alertCtrl: AlertController
+    private store: StoreService,
+    private alertCtrl: AlertController,
   ) {}
 
-
   private save(title: string): void {
-    const list = new ListModel(title, this.id);
-
-    this.storage.set('id', this.id);
-    this.storage.set(`${this.id}`, JSON.stringify(list));
-    this.lists.push(list);
-    this.updateFilterLists();
-    this.id++;
+    this.store.saveList(title, this.input);
   }
 
   public filterLists(value): void {
     this.input = value;
-    this.updateFilterLists();
-  }
-
-  public select(list: ListModel): void {
-    console.log(list)
+    this.store.updateFilteredLists(this.input);
   }
 
   public openWindowToCreateList() {
@@ -60,30 +48,15 @@ export class ListsPage implements OnInit {
         },
         {
           text: 'Create',
-          handler: data => {
-            this.save(data.title);
-          }
+          handler: data => this.save(data.title),
         }
       ]
     });
     alert.present();
   }
 
-  private updateFilterLists(): void {
-    this.filteredLists = this.lists.filter(list => list.title.indexOf(this.input) > -1);
-  }
-
   ngOnInit(): void {
-    this.storage.forEach((value, key) => {
-      const list = JSON.parse(value);
-      if (list.title) {
-        this.lists.push(JSON.parse(value));
-        this.filteredLists.push(JSON.parse(value));
-      };
-      console.log(value, key)
-    });
-    this.storage.get('id').then(id => {
-      if (id !== null) this.id = id;
-    });
+    this.store.initializeLists();
+    this.store.initializeListId();
   }
 }

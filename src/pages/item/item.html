@@ -1,12 +1,4 @@
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>item</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-
-<ion-content padding>
-
-</ion-content>
+<ion-item (click)="openItem(item)">
+  {{item.title}}
+  <ion-icon name="trash" item-end (click)="deleteItem($event, item)"></ion-icon>
+</ion-item>

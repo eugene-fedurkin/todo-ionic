@@ -5,14 +5,18 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { IonicStorageModule } from '@ionic/storage';
+
+import { StoreService } from '../service/store-service';
 
 import { MyApp } from './app.component';
 import { ListsPage } from '../pages/lists/lists';
 import { List } from '../pages/list/list';
 import { Items } from '../pages/items/items';
 import { Item } from '../pages/item/item';
+import { ItemDetailsPage } from '../pages/item-details/item-details';
 
 const configToFarebase = {
   apiKey: "AIzaSyBaG7kLeAUWVYYyhLDSVuMe7RHVEIUdVps",
@@ -29,12 +33,14 @@ const configToFarebase = {
     ListsPage,
     List,
     Items,
-    Item
+    Item,
+    ItemDetailsPage
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(configToFarebase),
+    AngularFireDatabaseModule,
     AngularFireStorageModule,
     IonicStorageModule.forRoot()
   ],
@@ -44,11 +50,13 @@ const configToFarebase = {
     ListsPage,
     List,
     Items,
-    Item
+    Item,
+    ItemDetailsPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    StoreService,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

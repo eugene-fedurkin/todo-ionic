@@ -1,0 +1,11 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button (click)="dismiss()">Close</button>
+    <ion-title>{{item.title}}</ion-title>
+    <button ion-button (click)="openEditWindow()">Edit</button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  {{item.description}}
+</ion-content>
