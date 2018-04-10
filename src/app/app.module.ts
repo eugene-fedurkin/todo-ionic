@@ -8,8 +8,11 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { IonicStorageModule } from '@ionic/storage';
-
-import { StoreService } from '../service/store-service';
+import { CashService } from '../service/cash-service';
+import { ListsService } from '../service/lists-service';
+import { ItemsService } from '../service/items-service';
+import { LoaderService } from '../service/loader-service';
+import { HttpService } from '../service/http-service';
 
 import { MyApp } from './app.component';
 import { ListsPage } from '../pages/lists/lists';
@@ -56,7 +59,11 @@ const configToFarebase = {
   providers: [
     StatusBar,
     SplashScreen,
-    StoreService,
+    CashService,
+    ListsService,
+    ItemsService,
+    LoaderService,
+    HttpService,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

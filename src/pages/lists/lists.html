@@ -6,9 +6,12 @@
 
 <ion-content padding>
   <ion-searchbar [ngModel]="input" (ngModelChange)="filterLists($event)"></ion-searchbar>
-  <button ion-button (click)="openWindowToCreateList()">create list</button>
+  <button padding ion-button (click)="openWindowToCreateList()">create list</button>
 
   <ion-list>
     <page-list *ngFor="let list of filteredLists" [list]="list"></page-list>
   </ion-list>
+  <div *ngIf="!filteredLists.length" class="note" text-center>
+    The list is empty.
+  </div>
 </ion-content>

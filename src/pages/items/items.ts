@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import {  NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 
-import { StoreService } from '../../service/store-service';
-
 import { ListModel } from '../../model/list';
 import { ItemModel } from '../../model/item';
+import { CashService } from '../../service/cash-service';
+import { ItemsService } from '../../service/items-service';
 
 @Component({
   selector: 'page-items',
@@ -16,24 +16,25 @@ export class Items implements OnInit {
 
   public input: string = '';
   public get list(): ListModel {
-    return this.store.list;
+    return this.cash.list;
   }
   public get filteredItems(): ItemModel[] {
-    return this.store.filteredItems;
+    return this.cash.filteredItems;
   }
 
   constructor(
-    private store: StoreService,
+    private cash: CashService,
+    private itemService: ItemsService,
     private navParams: NavParams,
     private alertCtrl: AlertController,
   ) {
-    this.store.list = this.navParams.get('list');
-    this.store.filteredItems = this.store.list.items;
+    this.cash.list = this.navParams.get('list');
+    this.cash.filteredItems = this.cash.list.items;
   }
 
   public filterItems(value: string): void {
-    this.input = value;
-    this.store.updateFilteredItems(this.input);
+    this.cash.filterToInputOfItem = value;
+    this.itemService.updateFilteredItems();
   }
 
   public openWindowToCreateItem(): void {
@@ -56,7 +57,7 @@ export class Items implements OnInit {
         },
         {
           text: 'Create',
-          handler: data => this.store.saveItem(data.title, data.description),
+          handler: data => this.itemService.saveItem(data.title, data.description),
         }
       ]
     });
@@ -64,6 +65,6 @@ export class Items implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.initializeItemId();
+    this.itemService.initializeItemId();
   }
 }

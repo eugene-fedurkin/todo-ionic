@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ViewController , NavParams } from 'ionic-angular';
 
-import { StoreService } from '../../service/store-service';
+// import { StoreService } from '../../service/store-service';
 
 import { ItemModel } from '../../model/item';
+import { ItemsService } from '../../service/items-service';
 
 @Component({
   selector: 'page-item-details',
@@ -17,7 +18,8 @@ export class ItemDetailsPage implements OnInit {
     private params: NavParams,
     private viewCtrl: ViewController,
     private alertCtrl: AlertController,
-    private store: StoreService,
+    // private store: StoreService,
+    private itemService: ItemsService,
   ) {
   }
   
@@ -47,7 +49,7 @@ export class ItemDetailsPage implements OnInit {
         },
         {
           text: 'Edit',
-          handler: data => this.store.editItem(data.title, data.description, this.item.id),
+          handler: data => this.itemService.editItem(data.title, data.description, this.item.id),
         }
       ]
     });

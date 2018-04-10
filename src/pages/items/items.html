@@ -11,4 +11,7 @@
   <ion-list>
     <item *ngFor="let item of filteredItems" [item]="item"></item>
   </ion-list>
+  <div *ngIf="!filteredItems || !filteredItems.length" class="note" text-center>
+    The list is empty.
+  </div>
 </ion-content>

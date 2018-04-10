@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { AlertController, ModalController } from 'ionic-angular';
 
-import { StoreService } from '../../service/store-service';
-
 import { ItemModel } from '../../model/item';
 import { ItemDetailsPage } from '../item-details/item-details';
+import { ItemsService } from '../../service/items-service';
 
 @Component({
   selector: 'item',
@@ -14,9 +13,9 @@ export class Item {
 
   @Input('item')
   public item: ItemModel;
-  
+
   constructor(
-    private store: StoreService,
+    private itemService: ItemsService,
     private alertCtrl: AlertController,
     private modalCtrl: ModalController
   ) {}
@@ -39,7 +38,7 @@ export class Item {
         },
         {
           text: 'Remove',
-          handler: () => this.store.removeItem(item.id),
+          handler: () => this.itemService.removeItem(item.id),
         }
       ]
     });

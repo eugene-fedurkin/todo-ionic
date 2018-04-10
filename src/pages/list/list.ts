@@ -3,7 +3,8 @@ import { AlertController, NavController } from 'ionic-angular';
 
 import { Items } from '../items/items';
 import { ListModel } from '../../model/list';
-import { StoreService } from '../../service/store-service';
+
+import { ListsService } from '../../service/lists-service';
 
 @Component({
   selector: 'page-list',
@@ -11,15 +12,13 @@ import { StoreService } from '../../service/store-service';
 })
 export class List {
 
-  // private items: any = Items // TODO: change type
-
   @Input('list')
   public list: ListModel;
 
   constructor(
     private navCtrl: NavController,
     private alertCtrl: AlertController,
-    private store: StoreService,
+    private listService: ListsService,
   ) {}
 
   public select(list: ListModel): void {
@@ -39,7 +38,7 @@ export class List {
         },
         {
           text: 'Remove',
-          handler: () => this.store.removeList(list.id),
+          handler: () => this.listService.removeList(list.id),
         }
       ]
     });

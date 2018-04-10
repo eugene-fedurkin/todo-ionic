@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 
 import { ListModel } from '../../model/list';
-import { StoreService } from '../../service/store-service';
+import { CashService } from '../../service/cash-service';
+import { ListsService } from '../../service/lists-service';
 
 @Component({
   selector: 'page-lists',
@@ -12,24 +13,25 @@ export class ListsPage implements OnInit {
 
   public input: string = '';
   private get lists(): ListModel[] {
-    return this.store.lists;
+    return this.cash.lists;
   };
   public get filteredLists(): ListModel[] {
-    return this.store.filteredLists;
+    return this.cash.filteredLists;
   };
 
   constructor(
-    private store: StoreService,
+    private cash: CashService,
+    private listsService: ListsService,
     private alertCtrl: AlertController,
   ) {}
 
   private save(title: string): void {
-    this.store.saveList(title, this.input);
+    this.listsService.saveList(title, this.input);
   }
 
   public filterLists(value): void {
     this.input = value;
-    this.store.updateFilteredLists(this.input);
+    this.listsService.updateFilteredLists(this.input);
   }
 
   public openWindowToCreateList() {
@@ -56,7 +58,7 @@ export class ListsPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.initializeLists();
-    this.store.initializeListId();
+    // this.listsService.initializeLists();
+    // this.listsService.initializeListId();
   }
 }
