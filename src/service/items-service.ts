@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { ToastController } from 'ionic-angular';
 
 import { ItemModel } from '../model/item';
@@ -7,6 +6,7 @@ import { ItemModel } from '../model/item';
 import { CashService } from './cash-service';
 import { HttpService } from './http-service';
 import { BaseService } from './base-service';
+import { StorageService } from './storage-service';
 
 @Injectable()
 export class ItemsService extends BaseService {
@@ -14,7 +14,7 @@ export class ItemsService extends BaseService {
   constructor(
     private http: HttpService,
     private cash: CashService,
-    private storage: Storage,
+    private storage: StorageService,
     protected toastCtrl: ToastController,
   ) {
     super(toastCtrl);
@@ -31,9 +31,7 @@ export class ItemsService extends BaseService {
       this.http.setList(this.cash.list.id, this.cash.list);
       this.http.listsRef.set('itemId', item.id);
     } else {
-      this.storage.set('itemId', this.cash.itemId);
-      this.storage.set(`${this.cash.list.id}`, JSON.stringify(this.cash.list));
-      this.cash.wasChanges = true;
+      this.storage.set(`${this.cash.list.id}`, this.cash.list, null, this.cash.itemId);
     }
 
     this.showNitification('The item was saved');
@@ -44,13 +42,6 @@ export class ItemsService extends BaseService {
       .filter(item => item.title.includes(this.cash.filterToInputOfItem));
   }
 
-  // public initializeItemId(): void {
-  //   if (!this.cash.itemId && this.cash.itemId !== 0) {
-  //     this.storage.get('itemId')
-  //       .then(itemId => this.cash.itemId = itemId ? itemId : 0);
-  //   }
-  // }
-
   public removeItem(id: number): void {
     const indexOfItem = this.cash.list.items.findIndex(item => item.id === id);
     this.cash.list.items.splice(indexOfItem, 1);
@@ -59,8 +50,7 @@ export class ItemsService extends BaseService {
     if (this.cash.isOnline) {
       this.http.setList(this.cash.list.id, this.cash.list);
     } else {
-      this.storage.set(`${this.cash.list.id}`, JSON.stringify(this.cash.list));
-      this.cash.wasChanges = true;
+      this.storage.set(`${this.cash.list.id}`, this.cash.list);
     }
 
     this.showNitification('The item was removed');
@@ -74,8 +64,7 @@ export class ItemsService extends BaseService {
     if (this.cash.isOnline) {
       this.http.setList(item.listId, this.cash.list);
     } else {
-      this.storage.set(`${item.listId}`, JSON.stringify(this.cash.list));
-      this.cash.wasChanges = true;
+      this.storage.set(`${item.listId}`, this.cash.list);
     }
 
     this.showNitification('The item was edited');

@@ -44,6 +44,32 @@ export class List {
     });
     alert.present();
   }
+
+
+  public openWindowToEdit(event: Event, list: ListModel): void {
+    event.stopPropagation();
+    const editWindow = this.alertCtrl.create({
+      title: 'Edit list',
+      inputs: [
+        {
+          name: 'title',
+          placeholder: 'Title',
+          value: list.title,
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Create',
+          handler: data => this.listService.editList(data.title, list.id),
+        }
+      ]
+    });
+    editWindow.present();
+  }
 }
 
 // TODO: ip - 172.16.2.168:8100

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 
 import { ListModel } from '../../model/list';
@@ -9,7 +9,7 @@ import { ListsService } from '../../service/lists-service';
   selector: 'page-lists',
   templateUrl: 'lists.html',
 })
-export class ListsPage implements OnInit {
+export class ListsPage {
 
   public input: string = '';
   private get lists(): ListModel[] {
@@ -35,18 +35,18 @@ export class ListsPage implements OnInit {
   }
 
   public openWindowToCreateList() {
-    let alert = this.alertCtrl.create({
+    const createWindow = this.alertCtrl.create({
       title: 'Create list',
       inputs: [
         {
           name: 'title',
-          placeholder: 'Title'
+          placeholder: 'Title',
         }
       ],
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Create',
@@ -54,11 +54,6 @@ export class ListsPage implements OnInit {
         }
       ]
     });
-    alert.present();
-  }
-
-  ngOnInit(): void {
-    // this.listsService.initializeLists();
-    // this.listsService.initializeListId();
+    createWindow.present();
   }
 }

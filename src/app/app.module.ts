@@ -3,11 +3,9 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
+import { IonicStorageModule } from '@ionic/storage';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { AngularFireStorageModule } from 'angularfire2/storage';
-import { IonicStorageModule } from '@ionic/storage';
 import { Network } from '@ionic-native/network';
 
 import { CashService } from '../service/cash-service';
@@ -15,6 +13,7 @@ import { ListsService } from '../service/lists-service';
 import { ItemsService } from '../service/items-service';
 import { LoaderService } from '../service/loader-service';
 import { HttpService } from '../service/http-service';
+import { StorageService } from '../service/storage-service';
 
 import { MyApp } from './app.component';
 import { ListsPage } from '../pages/lists/lists';
@@ -39,15 +38,14 @@ const configToFarebase = {
     List,
     Items,
     Item,
-    ItemDetailsPage
+    ItemDetailsPage,
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(configToFarebase),
     AngularFireDatabaseModule,
-    AngularFireStorageModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -56,7 +54,7 @@ const configToFarebase = {
     List,
     Items,
     Item,
-    ItemDetailsPage
+    ItemDetailsPage,
   ],
   providers: [
     StatusBar,
@@ -67,7 +65,8 @@ const configToFarebase = {
     LoaderService,
     HttpService,
     Network,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    StorageService,
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
   ]
 })
 export class AppModule {}

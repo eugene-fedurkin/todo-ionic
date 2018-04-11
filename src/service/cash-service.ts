@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { Network } from '@ionic-native/network';
 import { ToastController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 import { ListModel } from '../model/list';
 import { ItemModel } from '../model/item';
@@ -36,9 +36,11 @@ export class CashService extends BaseService implements OnDestroy {
     super(toastCtrl);
 
     this.loader.showLoader();
-    this.network.onchange().subscribe(data => {
-      console.log(data)
-    })
+    this.isOnline = navigator.onLine;
+    if (!this.isOnline) {
+      this.initializeParams();
+      this.loader.hideLoader();
+    }
     this.http.valueChanges().subscribe(data => {
       this.isOnline = true;
       this.listId = Number.isInteger(data[data.length - 1]) ? data[data.length - 1] : 0;
@@ -53,21 +55,7 @@ export class CashService extends BaseService implements OnDestroy {
     this.subscribeToNetwork();
   }
 
-  public initializeLists(): void {
-    this.lists = [];
-    this.filteredLists = [];
-
-    this.storage.forEach((value, key) => {
-      const list = JSON.parse(value);
-      if (list.title) {
-        this.lists.push(JSON.parse(value));
-        this.filteredLists.push(JSON.parse(value));
-      };
-    });
-  }
-
   private subscribeToNetwork(): void {
-    console.log(this.network.type)
     this.connectSubscription = this.network.onConnect().subscribe(() => {
       this.isOnline = true;
 
@@ -79,9 +67,8 @@ export class CashService extends BaseService implements OnDestroy {
       this.showNitification('Network connected');
     });
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-      console.log(this.network.type)
+      this.syncDateWithOfflineDatabase();
       this.isOnline = false;
-      this.syncDateWithOfflineDatabase()
       this.showNitification('Network was disconnected!');
     });
   }
@@ -95,13 +82,24 @@ export class CashService extends BaseService implements OnDestroy {
   }
 
   private syncDateWithOfflineDatabase(): void {
-    this.storage.forEach((c, v) => console.log(c, v))
     this.storage.clear();
     this.lists.forEach(list => {
       this.storage.set(`${list.id}`, list);
     });
     this.storage.set('listId', this.listId);
     this.storage.set('itemId', this.itemId);
+  }
+
+  public initializeParams() {
+    this.storage.forEach((list, key) => {
+      if (list.title) {
+        this.lists.push(list);
+        this.filteredLists.push(list);
+      }
+    });
+    this.storage.get('listId').then(id => this.listId = id);
+    this.storage.get('itemId').then(id => this.itemId = id);
+    this.storage.get('wasChanges').then(wasChanges => this.wasChanges = wasChanges);
   }
 
   ngOnDestroy(): void {

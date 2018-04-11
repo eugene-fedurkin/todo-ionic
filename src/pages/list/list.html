@@ -1,4 +1,5 @@
 <ion-item (click)="select(list)">
   {{list.title}}
+  <ion-icon name="hammer" item-end padding-right (click)="openWindowToEdit($event, list)"></ion-icon>
   <ion-icon name="trash" item-end (click)="deleteList($event, list)"></ion-icon>
 </ion-item>
