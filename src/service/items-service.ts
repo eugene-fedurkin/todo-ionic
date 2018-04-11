@@ -24,12 +24,17 @@ export class ItemsService extends BaseService {
     if (!this.cash.list.items) this.cash.list.items = [];
 
     const item = new ItemModel(title, description, ++this.cash.itemId, this.cash.list.id);
-
     this.cash.list.items.push(item);
     this.updateFilteredItems();
-    this.http.setList(this.cash.list.id, this.cash.list);
-    this.storage.set('itemId', this.cash.itemId);
-    this.storage.set(`${this.cash.list.id}`, JSON.stringify(this.cash.list));
+
+    if (this.cash.isOnline) {
+      this.http.setList(this.cash.list.id, this.cash.list);
+      this.http.listsRef.set('itemId', item.id);
+    } else {
+      this.storage.set('itemId', this.cash.itemId);
+      this.storage.set(`${this.cash.list.id}`, JSON.stringify(this.cash.list));
+      this.cash.wasChanges = true;
+    }
 
     this.showNitification('The item was saved');
   }
@@ -39,20 +44,24 @@ export class ItemsService extends BaseService {
       .filter(item => item.title.includes(this.cash.filterToInputOfItem));
   }
 
-  public initializeItemId(): void {
-    if (!this.cash.itemId && this.cash.itemId !== 0) {
-      this.storage.get('itemId')
-        .then(itemId => this.cash.itemId = itemId ? itemId : 0);
-    }
-  }
+  // public initializeItemId(): void {
+  //   if (!this.cash.itemId && this.cash.itemId !== 0) {
+  //     this.storage.get('itemId')
+  //       .then(itemId => this.cash.itemId = itemId ? itemId : 0);
+  //   }
+  // }
 
   public removeItem(id: number): void {
     const indexOfItem = this.cash.list.items.findIndex(item => item.id === id);
     this.cash.list.items.splice(indexOfItem, 1);
     this.updateFilteredItems();
 
-    this.http.setList(this.cash.list.id, this.cash.list);
-    this.storage.set(`${this.cash.list.id}`, JSON.stringify(this.cash.list));
+    if (this.cash.isOnline) {
+      this.http.setList(this.cash.list.id, this.cash.list);
+    } else {
+      this.storage.set(`${this.cash.list.id}`, JSON.stringify(this.cash.list));
+      this.cash.wasChanges = true;
+    }
 
     this.showNitification('The item was removed');
   }
@@ -62,8 +71,12 @@ export class ItemsService extends BaseService {
     item.title = title;
     item.description = description;
 
-    this.http.setList(item.listId, this.cash.list);
-    this.storage.set(`${item.listId}`, JSON.stringify(this.cash.list));
+    if (this.cash.isOnline) {
+      this.http.setList(item.listId, this.cash.list);
+    } else {
+      this.storage.set(`${item.listId}`, JSON.stringify(this.cash.list));
+      this.cash.wasChanges = true;
+    }
 
     this.showNitification('The item was edited');
   }

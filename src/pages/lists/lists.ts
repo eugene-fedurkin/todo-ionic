@@ -26,12 +26,12 @@ export class ListsPage implements OnInit {
   ) {}
 
   private save(title: string): void {
-    this.listsService.saveList(title, this.input);
+    this.listsService.saveList(title);
   }
 
   public filterLists(value): void {
-    this.input = value;
-    this.listsService.updateFilteredLists(this.input);
+    this.cash.filterToInputOfList = value;
+    this.listsService.updateFilteredLists();
   }
 
   public openWindowToCreateList() {

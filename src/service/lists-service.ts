@@ -19,52 +19,59 @@ export class ListsService extends BaseService {
     protected toastCtrl: ToastController,
   ) {
     super(toastCtrl);
-    this.storage.clear()
   }
 
-  public saveList(title: string, valueToSearch: string) {
+  public saveList(title: string) {
     const list = new ListModel(title, ++this.cash.listId);
 
-    this.storage.set('listId', this.cash.listId);
-    this.storage.set(`${this.cash.listId}`, JSON.stringify(list));
     this.cash.lists.push(list);
-    this.updateFilteredLists(valueToSearch);
+    this.updateFilteredLists();
 
-    this.http.setList(this.cash.listId, list);
-    this.http.listsRef.set('itemId', this.cash.itemId);
-
+    if (this.cash.isOnline) {
+      this.http.setList(this.cash.listId, list);
+      this.http.listsRef.set('itemId', this.cash.itemId);
+    } else {
+      this.storage.set('listId', this.cash.listId);
+      this.storage.set(`${this.cash.listId}`, JSON.stringify(list));
+      this.cash.wasChanges = true;
+    }
     this.showNitification('The list was saved');
-    // this.tasksRef.set(`${this.cash.listId}`, list);
   }
 
-  public updateFilteredLists(title: string): void {
-    this.cash.filteredLists = this.cash.lists.filter(list => list.title.indexOf(title) > -1);
+  public updateFilteredLists(): void {
+    this.cash.filteredLists = this.cash.lists
+      .filter(list => list.title.indexOf(this.cash.filterToInputOfList) > -1);
   }
 
-  public initializeLists(): void { // TODO: its exist in cash-service
-    this.cash.lists = [];
-    this.cash.filteredLists = [];
+  // public initializeLists(): void { // TODO: its exist in cash-service
+  //   this.cash.lists = [];
+  //   this.cash.filteredLists = [];
 
-    this.storage.forEach((value, key) => {
-      const list = JSON.parse(value);
-      if (list.title) {
-        this.cash.lists.push(JSON.parse(value));
-        this.cash.filteredLists.push(JSON.parse(value));
-      };
-    });
-  }
+  //   this.storage.forEach((value, key) => {
+  //     const list = JSON.parse(value);
+  //     if (list.title) {
+  //       this.cash.lists.push(JSON.parse(value));
+  //       this.cash.filteredLists.push(JSON.parse(value));
+  //     };
+  //   });
+  // }
 
-  public initializeListId(): void {
-    this.storage.get('listId')
-      .then(listId => this.cash.listId = listId ? listId : 0);
-  }
+  // public initializeListId(): void {
+  //   this.storage.get('listId')
+  //     .then(listId => this.cash.listId = listId ? listId : 0);
+  // }
 
   public removeList(id: number) {
-    this.http.removeList(id);
-    this.storage.remove(`${id}`)
-      .then(resp => {
-        this.showNitification('The list was removed')
-        // this.initializeLists();
-      });
+    const indexOfList = this.cash.lists.findIndex(list => list.id === id);
+    this.cash.lists.splice(indexOfList, 1);
+    this.updateFilteredLists();
+
+    if (this.cash.isOnline) {
+      this.http.removeList(id);
+    } else {
+      this.storage.remove(`${id}`);
+      this.cash.wasChanges = true;
+    }
+    this.showNitification('The list was removed');
   }
 }

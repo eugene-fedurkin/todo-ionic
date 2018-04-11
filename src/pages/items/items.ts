@@ -65,6 +65,6 @@ export class Items implements OnInit {
   }
 
   ngOnInit(): void {
-    this.itemService.initializeItemId();
+    // this.itemService.initializeItemId();
   }
 }

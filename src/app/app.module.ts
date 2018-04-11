@@ -8,6 +8,8 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { IonicStorageModule } from '@ionic/storage';
+import { Network } from '@ionic-native/network';
+
 import { CashService } from '../service/cash-service';
 import { ListsService } from '../service/lists-service';
 import { ItemsService } from '../service/items-service';
@@ -64,6 +66,7 @@ const configToFarebase = {
     ItemsService,
     LoaderService,
     HttpService,
+    Network,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
