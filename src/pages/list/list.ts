@@ -71,5 +71,3 @@ export class List {
     editWindow.present();
   }
 }
-
-// TODO: ip - 172.16.2.168:8100

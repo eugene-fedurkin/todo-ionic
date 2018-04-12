@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import {  NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
@@ -12,7 +12,7 @@ import { ItemsService } from '../../service/items-service';
   selector: 'page-items',
   templateUrl: 'items.html',
 })
-export class Items implements OnInit {
+export class Items {
 
   public input: string = '';
   public get list(): ListModel {
@@ -62,9 +62,5 @@ export class Items implements OnInit {
       ]
     });
     alert.present();
-  }
-
-  ngOnInit(): void {
-    // this.itemService.initializeItemId();
   }
 }

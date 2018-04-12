@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ViewController , NavParams } from 'ionic-angular';
 
-// import { StoreService } from '../../service/store-service';
-
 import { ItemModel } from '../../model/item';
 import { ItemsService } from '../../service/items-service';
 
@@ -18,7 +16,6 @@ export class ItemDetailsPage implements OnInit {
     private params: NavParams,
     private viewCtrl: ViewController,
     private alertCtrl: AlertController,
-    // private store: StoreService,
     private itemService: ItemsService,
   ) {
   }

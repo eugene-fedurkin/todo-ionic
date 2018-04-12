@@ -12,7 +12,7 @@ export class LoaderService {
   public showLoader(): void {
     if (!this.loaderRequest) {
       this.loader = this.loadingCtrl.create({
-        content: 'Please wait...'
+        content: 'Please wait...',
       });
       this.loader.present();
     }
